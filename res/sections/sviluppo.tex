@@ -1,0 +1,49 @@
+\section{Sviluppo}
+	\subsection{Progettazione}
+	\par La tipologia del sito è stata decisa durante la fase preliminare: in seguito ad un \textit{brainstorming} si sono delineate le idee del gruppo; idee che hanno permesso di elencare gli obiettivi da raggiungere durante lo sviluppo del progetto. Successivamente, è stata organizzata una suddivisione generale delle responsabilità individuali. 
+	\par Una volta fatti i primi passi si sono decisi il layout del sito, i pattern da seguire per lo sviluppo, le porzioni principali del sito e le tecnologie da utilizzare.
+	\par Infine, è stato progettato il database, il quale permette l’immagazzinamento e l’organizzazione delle informazioni sulle quali è fondato il sito web: \textbf{inserzioni}, \textbf{utenti}, \textbf{provincie}, \textbf{regioni}, \textbf{equipaggiamenti} montati dalle macchine, vari \textbf{optional} delle macchine, le \textbf{macchine} stesse, le \textbf{categorie} a cui appartengono le macchine e i \textbf{colori} delle macchine. Si è passati poi allo sviluppo del front-end e del back-end.
+	\par Dopo aver effettuato il merge del codice, il sito è stato collaudato per risolvere eventuali bug e verificare l’accessibilità e la compatibilità con dispositivi e browser differenti.
+	\subsection{Design}
+	\par Dato lo stato in continuo aggiornamento del sito, è stata posta particolare attenzione alla separazione tra contenuto statico e dinamico e alla separazione tra struttura, presentazione e comportamento.
+	\par Come standard si è deciso di usare \textbf{XHTML 1.0 STRICT}, il quale fornisce un ottimo supporto per strutturare il contenuto in maniera semplice ed efficace: ad esempio, grazie alla sua sintassi rigida, i validatori possono rilevare immediatamente la chiusura corretta dei tag.
+Le strutture delle pagine web sono state \quotes{templatizzate} in modo da incrementare la robustezza del sito web, sul quale sono applicati fogli di stile in CSS puri. I layout in CSS sono stati sviluppati con l'obiettivo di ottenere un design fluido e funzionale per la maggior parte dei browsers e dispositivi. Inoltre attraverso \textit{media queries} si sono resi disponibili diversi layout per finestre browser di diverse risoluzioni, in fine Il supporto a mobile e tablet è stato fornito tramite appositi fogli di stile.
+Un altro aspetto preso in considerazione è stata l’accessibilità del sito per diverse categorie di utenti, questa è analizzata in dettaglio maggiore successivamente, in una sezione dedicata.
+	\subsection{HTML e CSS}
+	\par Riuscire a separare la struttura delle informazioni dallo stile è stato fondamentale per il tipo di sito preso in esame.
+	\par \`E stato utilizzato un solo file CSS, opportunamente diviso in categorie, per tutte le direttive di design esposte nelle varie pagine. Nello stesso file troviamo anche le direttive specifiche per il sito in modalità mobile e tablet. Invece si è scelto di separare il css relativo alla stampa. 
+	\par Per quanto riguarda le grandezze si è fatta molta attenzione ad esprimerle in unità relative (\textbf{rem}, \textbf{em}, \textbf{\%}).
+	\subsection{MySQL e PHP}
+	\par Il lato server fornisce un supporto fondamentale a tutto ciò che succede nel sito web, il database è stato sviluppato per registrare utenti e annunci, con una grande quantità di dettagli annessi. (Aggiungere)
+	\par L’altra componente cruciale server side è PHP, che gestisce tutte le richieste ricevute dal server effettuando redirect alle componenti assegnate per soddisfare le richieste: ogni richiesta di azione o pagina viene passata attraverso index.php che ne verifica la legittimità e reindirizza al componente del controller assegnato a soddisfare tale richiesta, in caso contrario viene lanciato il rispettivo errore. 
+	\par Il controller gestendo la richiesta carica i dati dal database ed elabora il template da ritornare all’utente. (Aggiungere)
+	\par Questo permette una comoda gestione delle pagine in modo dinamico e anche facili modifiche inserendo nuove pagine senza dover eliminare versioni precedenti, con modifiche minime al controller. (Aggiungere)
+	\subsection{JavaScript}
+	\par \`E stato utilizzato il linguaggio JavaScript per rendere dinamico il comportamento \textit{client-side} di alcune pagine di UsAuto. In particolare, l'utilizzo di JavaScript è circoscritto al controllo dell'input nei \textit{form} di ricerca: questo è il frutto di una decisione presa all'unanimità in quanto non è possibile fare alcuna assunzione circa l'utilizzo di tale tecnologia, poiché può essere disabilitata o non presente. Proprio per questo motivo il controllo dell'input non è eseguito solamente da funzioni JavaScript: nell'eventualità che esso non sia presente, sarà compito del \textbf{PHP} fornire un controllo \textit{server-side}, il quale fornirà una visualizzazione opportuna in caso di errore. Di seguito sono elencate le funzioni implementate, seguite da una breve descrizione.
+	\oniontable
+\begin{center}
+	\begin{longtable}{| m{0.28\textwidth} | m{0.75\textwidth} |} \hline
+	\rowcolor{red!50!blue!40!white}
+	\textbf{Elemento}&\textbf{Descrizione}\\ \hline 
+	\endfirsthead
+	\rowcolor{white}
+	\multicolumn{2}{|r|}{\textit{-- continuazione da pagina precedente}} \\ \hline 
+	\endhead
+	\hline
+	\rowcolor{white} 
+	\multicolumn{2}{|r|}{{\textit{-- continua a pagina successiva}}} \\
+	\endfoot
+	\endlastfoot
+	\texttt{wrongInput} & Messaggio d'errore standard da visualizzare in caso di input sbagliato\\ 
+	\texttt{letters} & Espressione regolare che ammette solo lettere maiuscole, minuscole e lettere accentate\\
+	\texttt{numbers} & Esoressione regolare che ammette solo numeri, da zero a nove\\
+	\texttt{errors[]} & Array che contiene la form che ha generato l'errore con il messaggio d'errore da visualizzare\\
+	\texttt{displayError}() & Funzione che controlla l'array \textit{errors} e decide se visualizzare il messaggio d'errore e disabilitare il pulsante di ricerca\\
+	\texttt{checkLetters}() & Funzione che controlla che l'input delle form sia corretto, ammettendo solo lettere\\
+	\texttt{checkNumbers}() & Funzione che controlla che l'input delle form sia corretto, ammettendo solo numeri\\
+	\texttt{invalidInput}(element, paragraph, message) & Funzione invocata in presenza di un input errato in una form. Riceve come parametri attuali l'elemento (form) contenente l'input errato, l'id del paragrafo dove visualizzare il messaggio d'errore (tipicamente \texttt{inputErr}) ed il messaggio d'errore da visualizzare. Si occupa di modificare lo stile della form per darle una colorazione del bordo rossa e ad aggiungere l'errore all'array \texttt{errors}, se esso non lo contiene già. Viene infine invocata la funzione \texttt{displayErrors()}\\
+	\texttt{validInput}(val, element, paragraph) & Funzione invocata in presenza di un input corretto in una form. Riceve come parametri attuali il valore corretto da visualizzare (tipicamente il valore già contenuto dalla form), l'elemento interessato (form) contenente l'input corretto e l'id del paragrafo che contiene gli eventuali messaggi d'errore da visualizzare (tipicamente \texttt{inputErr}). Si occupa di modificare lo stile della form per darle una colorazione del bordo nera e a togliere l'errore all'array \texttt{errors}. Viene infine invocata la funzione \texttt{displayErrors()}\\ \hline
+	\rowcolor{white}
+	\caption{Elementi implementati nel JavaScript}
+	\end{longtable}
+\end{center} 
