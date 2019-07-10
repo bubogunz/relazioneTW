@@ -13,11 +13,53 @@ Un altro aspetto preso in considerazione è stata l’accessibilità del sito pe
 	\par Riuscire a separare la struttura delle informazioni dallo stile è stato fondamentale per il tipo di sito preso in esame.
 	\par \`E stato utilizzato un solo file CSS, opportunamente diviso in categorie, per tutte le direttive di design esposte nelle varie pagine. Nello stesso file troviamo anche le direttive specifiche per il sito in modalità mobile e tablet. Invece si è scelto di separare il css relativo alla stampa. 
 	\par Per quanto riguarda le grandezze si è fatta molta attenzione ad esprimerle in unità relative (\textbf{rem}, \textbf{em}, \textbf{\%}).
-	\subsection{MySQL e PHP}
-	\par Il lato server fornisce un supporto fondamentale a tutto ciò che succede nel sito web, il database è stato sviluppato per registrare utenti e annunci, con una grande quantità di dettagli annessi. (Aggiungere)
-	\par L’altra componente cruciale server side è PHP, che gestisce tutte le richieste ricevute dal server effettuando redirect alle componenti assegnate per soddisfare le richieste: ogni richiesta di azione o pagina viene passata attraverso index.php che ne verifica la legittimità e reindirizza al componente del controller assegnato a soddisfare tale richiesta, in caso contrario viene lanciato il rispettivo errore. 
-	\par Il controller gestendo la richiesta carica i dati dal database ed elabora il template da ritornare all’utente. (Aggiungere)
-	\par Questo permette una comoda gestione delle pagine in modo dinamico e anche facili modifiche inserendo nuove pagine senza dover eliminare versioni precedenti, con modifiche minime al controller. (Aggiungere)
+	\subsection{MySQL}
+	\par Il database MySQL è stato utilizzato per memorizzare in modo permanente le informazioni inserite dagli utenti e per fornire procedure sql per facilitare le operazioni su di esse.
+  \par Le tabelle principali sono \texttt{User}, \texttt{Advertisement} e \texttt{Car}. La tabella \texttt{User} contiene, come il nome suggerisce, le informazioni di tutti gli utenti registrati. Le tabelle \texttt{Advertisement} e \texttt{Car} contengono tutte le informazioni degli annunci pubblicati. Abbiamo deciso di separare le informazioni in due tabelle per rendere la struttura pi\`u estendibile a future modifiche, infatti le due tabelle sono collegate da una chiave esterna \texttt{item = idCar} quindi se, ad esempio, in futuro si volessero gestire oggetti che per loro natura hanno caratteristiche diverse dalle autovetture (si pensi alle moto) baster\`a creare una nuova tabella e creare una nuova chiave esterna senza stravolgere la struttura corrente.
+  \par Inoltre abbiamo creato delle tabelle di utilit\`a come \texttt{Region}, \texttt{Province}, \texttt{Category} e \texttt{Color} che contengono delle informazioni che vengono riferite molte volte dai record delle altre tabelle. Questo ci permette di salvare molto spazio nel database e renderlo scalabile.
+  \par Il database espone delle funzionalità tramite procedure per effettuare inserimenti, modifiche ed eliminazioni, preservando la coerenza dei dati. Questa scelta rende il backend completamente modulare ed estendibile perch\'e il database \`e completamente slegato dal codice PHP, infatti il codice sql \`e memorizzato nel database e all'interno del codice PHP \`e presente solo la connessione ad esso e la chiamata alle procedure. Se in futuro si volesse cambiare tipologia di database questo richiederebbe il minimo sforzo. 
+	\subsection{PHP}
+	\par L’altra componente cruciale server side è PHP, che gestisce tutte le richieste ricevute dal server effettuando redirect alle componenti assegnate per soddisfare le richieste.
+  \par Abbiamo utilizzato una programmazione orientata agli oggetti adottando il pattern architetturale MVC per mantenere separata il pi\`u possibile la struttura statica delle pagine HTML dal comportamento dinamico.
+  \par \textbf{Model}: Fanno parte del model tutte le classi che si interfacciano con il database. Per una migliore estendibilit\`a del codice vi \`e un'interfaccia \texttt{Repository} che espone dei metodi che vengono implementati nelle classi concrete che hanno il compito di effettuare le richieste al database. Ad esempio la classe \texttt{AdvRepository} implementa le funzioni \texttt{save()}, \texttt{update()}, \texttt{remove()}, \texttt{findOne()}, \texttt{findAll()} relative alle operazioni di inserimento, modifica, cancellazione e prelievo degli annunci. \`E presente la classe \texttt{MySqlDB} che, oltre a gestire la connessione con il database, fornisce delle funzioni che generalizzano l'azione di invio di una richiesta query rendendo pi\`u leggibile il codice all'interno delle varie classi \texttt{*Repository.php}.
+
+   \par \textbf{View}: la classe \texttt{View} ha il compito di delineare la struttura generale di tutte le pagine HTML e di fornire delle funzioni per:
+    \begin{itemize}
+      \item Settare alcuni parametri come ad esempio il titolo della pagina o le variabili dinamiche da iniettare all'interno delle pagine.
+      \item Creare dinamicamente e correttamente i campi di input e di selezione
+      \item Comporre la struttura finale del documento HTML importando tutte i file html necessari nell'ordine corretto  
+    \end{itemize}
+
+  \par \textbf{Controller}: abbiamo creato tre controller, uno per ogni macro categoria da gestire:
+    \begin{itemize}
+      \item \texttt{AdvController} che gestisce tutte le pagine relative agli annunci: inserimento, ricerca, dettaglio ecc.
+      \item \texttt{MainController} che gestisce la pagina principale e tutte le pagine di supporto come ad esempio i \textit{Crediti} e \textit{Contatti}
+      \item \texttt{UserController} che gestisce tutte le pagine relative all'utente: registrazione, accesso, profilo ecc.
+    \end{itemize}
+    Ogni controller contiene diverse funzioni e ognuna soddisfa uno dei seguenti compiti:
+    \begin{itemize}
+      \item Controllare i valori in input forniti dall'utente mediante una form
+      \item Invocare il model relativo per inviare o ricevere dati dal database
+      \item Creare l'oggetto View per generare la pagina HTML richiesta dall'utente contenente le informazioni richieste
+      \item Reindirizzare la richiesta ad altre pagine 
+    \end{itemize}
+
+  \par \textbf{Routing}: Ogni indirizzo URL \`e della forma \texttt{dominio.it/controller/function/parameter1/parameter2} e ogni richiesta HTTP viene gestita dal file \texttt{routing.php}. Quindi se, ad esempio, si volesse accedere al dettaglio di un'annuncio avente identificatore \textbf{27} baster\`a digitare il seguente url \texttt{dominio.it/adv/show/27} e la richiesta HTTP verra' gestita dal file di routing che si occuper\`a di
+     \begin{itemize}
+       \item Scomporre l'url in \texttt{adv}, \texttt{show} e \texttt{27}
+       \item Creare il controller \texttt{AdvController} dopo aver verificato la sua esistenza
+       \item Invocare la funzione \texttt{show()} passandogli il valore 27 come parametro 
+    \end{itemize}
+    Nel caso in cui l'indirizzo url fosse sbagliato l'utente viene indirizzato ad una pagina di errore 404.
+
+  \par \textbf{Utility}: Abbiamo implementato delle classi di utilit\`a che vengono utilizzate in diverse situazioni:
+    \begin{itemize}
+      \item \textbf{Validate} Questa classe contiene una serie di funzioni statiche che permettono di validare ogni signola tipologia di input e di convertirlo nel formato pi\`u adeguato in base alle esigenze.
+      \item \textbf{ImageResize} Questa classe permette di generare delle miniature (\textit{thumbnail}) per ogni immagine caricata dagli utenti. Queste verranno poi utilizzate nei risultati della ricerca al posto delle immagini di dimensioni originali cos\`i da risparmiare bit durante la trasmissione della pagina HTML e facilitare la navigazione anche agli utenti con una connessione internet non performante.
+    \end{itemize}
+
+
+  
 	\subsection{JavaScript}
 	\par \`E stato utilizzato il linguaggio JavaScript per rendere dinamico il comportamento \textit{client-side} di alcune pagine di usauto. In particolare, l'utilizzo di JavaScript è circoscritto al controllo dell'input nei \textit{form} di ricerca: questo è il frutto di una decisione presa all'unanimità in quanto non è possibile fare alcuna assunzione circa l'utilizzo di tale tecnologia, poiché può essere disabilitata o non presente. Proprio per questo motivo il controllo dell'input non è eseguito solamente da funzioni JavaScript: nell'eventualità che esso non sia presente, sarà compito del \textbf{PHP} fornire un controllo \textit{server-side}, il quale fornirà una visualizzazione opportuna in caso di errore. Di seguito sono elencate le funzioni implementate, seguite da una breve descrizione.
 	\oniontable

@@ -7,13 +7,11 @@
 		\item Un motore database compatibile con MySql.
 	\end{itemize}
 	\subsection{Configurazione e dump}
-	\par (DA RIVEDERE)
-	\par Il primo accesso al server, per un funzionamento corretto, deve essere fatto attraverso la pagina iniziale “\texttt{./php/index.php}” che imposta i parametri necessari per la navigazione nel sito. \acapo
+  \par Abbiamo creato un file \texttt{sql/init.sql} che contiene la struttura delle tabelle, il popolamento e le procedure sql. Prima di utilizzare il sito \`e necessario importare all'interno del database questo file mediante il comando \texttt{source path/sql/init.sql}.
+  \par Il file \texttt{utility/config.php} contiene tutte le variabili d'ambiente che devono essere configurate in modo tale che l'accesso al database e il caricamento dinamico delle pagine funzioni correttamente. In particolare si deve inizializzare l'url del sito web e le credenziali per accedere al database.
 	\par Per un funzionamento corretto sono necessarie alcune configurazioni:
 	\begin{itemize}
-		\item estensione \quotes{mysqli} di PHP attiva;
-		\item estenzione \quotes{PDO} attiva in \texttt{php.ini};
+		\item estensione \quotes{mysqli} di PHP attiva necessaria per effettuare le richieste query al database;
+		\item estensione \quotes{gd} di PHP attiva necessaria per creare le anteprime delle immagini caricate dagli utenti;
 		\item permessi di upload concessi a PHP.
 	\end{itemize}
-	\par Durante il dumping si consiglia, con il comando \quotes{\texttt{set foreign\_key\_checks=0}}, di disattivare le chiave esterne e di riattivarle una volta terminata la fase di dumping.
-	
